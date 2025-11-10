@@ -42,7 +42,7 @@
 				  </li>
 
                   <li>
-					<a id="logout"><span class="fa fa-paper-plane mr-3"></span> Logout</a>
+					<a  id="logout"><span class="fa fa-paper-plane mr-3"></span> logout</a>
 				  </li>
 
 				</ul>
@@ -57,19 +57,20 @@
 		  </div>
 		</div>
 
-    <script src="{{ asset('admin-assets/plugins/jquery/jquery.min.js') }}"></script>
-
-    <script src="{{ asset('front-end/js/main.js') }}"></script>
+    	<script src="{{ asset('admin-assets/plugins/jquery/jquery.min.js') }}"></script>
+        <script src="{{ asset('front-end/js/main.js') }}"></script>
     <script>
-        $('#logout').on('click', function ()
+        $('#logout').click(function ()
         {
+
             $.ajax({
-                type: "GET",
+                method: "GET",
                 url: "{{ route('user.logout') }}",
                 dataType: "JSON",
                 success: function (response) {
                     if (response.status == true)
                     {
+                        console.log(response.status);
                         window.location.href="{{ route('login') }}";
                     }
                 }

@@ -60,7 +60,7 @@
 				  		</div>
 					</form>
 		  			<p class="mb-1 mt-3">
-				  		<a href="{{ route('forgot-password') }}">I forgot my password</a>
+				  		<a href="{{ route('password-forgot.view') }}">I forgot my password</a>
 					</p>
 			  	</div>
 			  	<!-- /.card-body -->

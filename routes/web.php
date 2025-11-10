@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\Auth\forgotPasswordController;
 use App\Http\Controllers\Auth\verification;
 use Illuminate\Support\Facades\Route;
 
@@ -20,8 +19,15 @@ Route::post('/authenticate',[AuthController::class,'authentication'])->name('use
 Route::get('verify/{token}',[verification::class,'index'])->name('verify.token');
 Route::get('token_regenerate/{id}',[verification::class,'token_regenerate'])->name('token_regenerate');
 
-Route::get('dashboard',[HomeController::class,'index'])->name('dashboard');
+Route::get('/password-forgot',[AuthController::class,'passwordForgotView'])->name('password-forgot.view');
+Route::post('/password-forgot',[AuthController::class,'passwordForgot'])->name('password-forgot');
 
+Route::get('reset-password/{token}',[AuthController::class,'resetPasswordView'])->name('reset-password.view');
+Route::post('reset-password/',[AuthController::class,'resetPassword'])->name('reset-password');
+
+
+
+Route::get('dashboard',[HomeController::class,'index'])->name('dashboard');
 Route::get('/logout',[HomeController::class,'logout'])->name('user.logout');
 
 

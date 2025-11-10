@@ -11,9 +11,14 @@ use App\Http\Requests\Auth\AuthRequest;
 use Illuminate\Support\Facades\RateLimiter;
 use App\Http\Requests\Auth\registrationRequest;
 use App\Jobs\sendEmailToNewUser;
+use App\Mail\passwordResetMail;
 use App\Mail\SendUserRegistrationNotification;
+use App\Models\password_reset_tokens;
+use App\Models\PasswordReset;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -115,5 +120,107 @@ class AuthController extends Controller
                 'message'   => "Email id and password mismatched",
             ],401);
         }
+    }
+
+
+    public function passwordForgotView()
+    {
+        return view('front_end.forgot_password');
+    }
+
+
+    public function passwordForgot(Request $request)
+    {
+        $validator = Validator::make($request->only('email'),[
+            'email' => 'required|email'
+        ]);
+
+        if ($validator->fails())
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors(),
+            ],422);
+        }
+
+        $user = User::where('email',$request->email)->first();
+        // dd($user);die;
+        if ($user == null)
+        {
+            session()->flash('error',"Email not found ");
+            return response()->json([
+                'status'  => false,
+                'message'   => "Email not found"
+            ]);
+        }
+
+        $token = Str::random(60);
+        $url = url("/reset-password")."/".$token;
+
+        $password_reset_tokens = PasswordReset::where('email',$request->email)->first();
+
+        PasswordReset::updateOrCreate(
+                ['email' => $request->email],
+                [
+                    'token'      => $token,
+                    'created_at' => Carbon::now(),
+                ]
+            );
+
+
+
+        Mail::to($request->email)->send(new passwordResetMail($url,$user));
+
+        session()->flash('success',"Email send on mail successfully ");
+        return response()->json([
+            'status'  => true,
+            'message' => "Email send on mail successfully ",
+        ]);
+    }
+
+    public function resetPasswordView($token)
+    {
+        $userData = PasswordReset::where('token',$token)->first();
+
+        if (!$userData)
+        {
+            return abort(404,"Something went wrong");
+        }
+
+        $user = User::where('email',$userData->email)->first();
+
+        return view('front_end.reset_password', compact('user'));
+    }
+
+
+    public function  resetPassword(Request $request)
+    {
+        $user = User::find($request->id);
+
+         $validator = Validator::make($request->all(),[
+            'password' => 'required|confirmed',
+            'id'       => 'required',
+
+        ]);
+
+        if ($validator->fails())
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors(),
+            ],422);
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        PasswordReset::where('email',$user->email)->delete();
+
+        session()->flash('success',"Password updated successfully");
+
+        return response()->json([
+                'status' => true,
+                'message' => "Password updated successfully",
+            ],200);
     }
 }
