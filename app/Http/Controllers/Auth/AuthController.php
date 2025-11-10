@@ -81,8 +81,20 @@ class AuthController extends Controller
         RateLimiter::hit($key, $decaySeconds = 60); // lock for 60s
 
 
+
         if (Auth::attempt($credentials))
         {
+            $user = User::where('email',$request->email)->first();
+
+            if (Auth::user()->is_verified == "0")
+            {
+                session()->flash('error',"'Pls verify your account before login'");
+                return response()->json([
+                    'status' => false,
+                    'message'  => 'Pls verify your account before login'
+                ]);
+            }
+
             RateLimiter::clear($key);
             $request->session()->regenerate();
 

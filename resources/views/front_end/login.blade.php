@@ -60,7 +60,7 @@
 				  		</div>
 					</form>
 		  			<p class="mb-1 mt-3">
-				  		<a href="forgot-password.html">I forgot my password</a>
+				  		<a href="{{ route('forgot-password') }}">I forgot my password</a>
 					</p>
 			  	</div>
 			  	<!-- /.card-body -->
@@ -94,7 +94,7 @@
                         if (response.status == true)
                         {
                             console.log(response.status);
-                            window.location.reload();
+                            window.location.href="{{ route('dashboard') }}";
 
                         }
                         else

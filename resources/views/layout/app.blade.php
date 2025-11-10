@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
 
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-		<link rel="stylesheet" href="css/style.css">
+		<link rel="stylesheet" href="{{ asset('front-end/css/style.css') }}">
   </head>
   <body>
 
@@ -40,6 +40,11 @@
 				  <li>
 					<a href="#"><span class="fa fa-paper-plane mr-3"></span> Information</a>
 				  </li>
+
+                  <li>
+					<a id="logout"><span class="fa fa-paper-plane mr-3"></span> Logout</a>
+				  </li>
+
 				</ul>
 
 			</nav>
@@ -52,8 +57,24 @@
 		  </div>
 		</div>
 
-    <script src="js/jquery.min.js"></script>
+    <script src="{{ asset('admin-assets/plugins/jquery/jquery.min.js') }}"></script>
 
-    <script src="js/main.js"></script>
+    <script src="{{ asset('front-end/js/main.js') }}"></script>
+    <script>
+        $('#logout').on('click', function ()
+        {
+            $.ajax({
+                type: "GET",
+                url: "{{ route('user.logout') }}",
+                dataType: "JSON",
+                success: function (response) {
+                    if (response.status == true)
+                    {
+                        window.location.href="{{ route('login') }}";
+                    }
+                }
+            });
+        });
+    </script>
   </body>
 </html>

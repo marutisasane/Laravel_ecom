@@ -21,7 +21,7 @@ class SendUserRegistrationNotification extends Mailable
     {
         $this->user = $user;
         $this->token = $token;
-        
+
     }
 
     /**
@@ -30,7 +30,7 @@ class SendUserRegistrationNotification extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Send User Registration Notification',
+            subject: 'Welcome to Our Platform, ' . $this->user->name,
         );
     }
 

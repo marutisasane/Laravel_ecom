@@ -64,16 +64,39 @@
         </div>
 
         <div class="content">
-            <h2>Hello, {{ $user->name }} 👋</h2>
+            @if (!$user == null)
+                <h2>Hello, {{ $user->name }} 👋</h2>
 
-            <p>Thank you for registering with <strong>{{ config('app.name') }}</strong>.
-            To complete your registration and verify your email address, please click the button below:</p>
+                 @if ($token_status == 0)
 
-            <p style="text-align:center;">
-                <a href="{{  $token}}" class="btn">Verify Email</a>
-            </p>
+                    <p>Thank you for registering with <strong>{{ config('app.name') }}</strong>.
+                        {{ $message }}, Pls click on below button to regenerate token:</p>
 
-            <p>If you didn’t create this account, you can safely ignore this email.</p>
+                        <p style="text-align:center;">
+                            <a href="{{ route('token_regenerate',$user) }}" class="btn">Re-Ganerate</a>
+                        </p>
+
+                @else
+                    <p>Thank you for registering with <strong>{{ config('app.name') }}</strong>.
+                    {{ $message }}, Pls click on below button to login:</p>
+
+                    <p style="text-align:center;">
+                        <a href="{{ route('login') }}" class="btn">Login</a>
+                    </p>
+                @endif
+            @else
+                <h2>Hello, User 👋</h2>
+
+                <p>Thank you for registering with <strong>{{ config('app.name') }}</strong>.
+                    {{ $message }}, Pls click on below button to login:</p>
+
+                    <p style="text-align:center;">
+                        <a href="{{ route('login') }}" class="btn">Login</a>
+                    </p>
+            @endif
+
+
+
 
             <p>Thanks,<br>
             <strong>{{ config('app.name') }} Team</strong></p>
