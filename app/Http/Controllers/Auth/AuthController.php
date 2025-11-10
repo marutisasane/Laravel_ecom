@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Auth\AuthRequest;
 use Illuminate\Support\Facades\RateLimiter;
 use App\Http\Requests\Auth\registrationRequest;
+use App\Jobs\sendEmailToNewUser;
 use App\Mail\SendUserRegistrationNotification;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
@@ -37,7 +38,7 @@ class AuthController extends Controller
 
             $token = url('verify/'.$user->verification_token);
 
-            Mail::to($user->email)->send(new SendUserRegistrationNotification($user,$token));
+            sendEmailToNewUser::dispatch($user,$token);
 
             session()->flash('success' , "User Added successfully");
             return response()->json([
@@ -45,7 +46,6 @@ class AuthController extends Controller
                 'message'   => "User Added successfully",
                 'data'      => $user,
             ]);
-
 
         }
         catch (\Exception $e)
