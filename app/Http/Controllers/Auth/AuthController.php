@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Events\UserRegister;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -41,9 +42,11 @@ class AuthController extends Controller
             $user->token_expires_at      =   Carbon::now()->addHour();
             $user->save();
 
+
             $token = url('verify/'.$user->verification_token);
 
-            sendEmailToNewUser::dispatch($user,$token);
+            // sendEmailToNewUser::dispatch($user,$token);  // Queue for send mail
+            UserRegister::dispatch($user,$token);  // event for send mail
 
             session()->flash('success' , "User Added successfully");
             return response()->json([

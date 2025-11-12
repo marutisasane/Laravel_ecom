@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Mail\passwordResetToken;
+use Illuminate\Support\Facades\Mail;
 
 class verification extends Controller
 {
@@ -19,6 +21,7 @@ class verification extends Controller
             $message = "You are already verified";
             return view('mail.verifactionPage' ,compact('message','user'));
        }
+
 
        if ($user->token_expires_at < Carbon::now())
         {
@@ -34,6 +37,7 @@ class verification extends Controller
             $user->save();
             $token_status = 1;
             $message = "User verification done successfully Pls login";
+
             return view('mail.verifactionPage' ,compact('message','user','token_status'));
 
 
@@ -43,12 +47,17 @@ class verification extends Controller
     public function token_regenerate($id)
     {
         $user = User::find($id);
+
         $user->verification_token      =   Str::random(60);
         $user->token_expires_at      =   Carbon::now()->addHour();
         $user->save();
 
         $token = url('verify/'.$user->verification_token);
 
-        return view('mail.userMail',compact('token','user'));
+
+        Mail::to($user->email)->send(new passwordResetToken($user,$token));
+
+
     }
 }
+
