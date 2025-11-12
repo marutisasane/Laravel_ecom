@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
   <head>
-  	<title>Sidebar 04</title>
+  	<title>{{ env('APP_NAME') }} </title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -20,7 +20,7 @@
 					  <span class="sr-only">Toggle Menu</span>
 					</button>
 				</div>
-					<h1><a href="index.html" class="logo">Project Name</a></h1>
+					<h1><a href="index.html" class="logo">Welcome to {{ env('APP_NAME') }} !</a></h1>
 				<ul class="list-unstyled components mb-5">
 				  <li class="active">
 					<a href="#"><span class="fa fa-home mr-3"></span> Homepage</a>
